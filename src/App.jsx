@@ -16,21 +16,30 @@ import { Toaster } from "react-hot-toast";
 import { useSingleTabChat } from "./store/useSingleTabChat";
 
 const App = () => {
-    const isActive = useSingleTabChat(true);
+    const { isActive, reason } = useSingleTabChat(true);
 
     const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
     const { theme } = useThemeStore();
     console.log({ onlineUsers });
 
     useEffect(() => {
-        checkAuth();
-    }, [checkAuth]);
-
+        if (isActive) {
+            checkAuth(); 
+        }
+    }, [isActive, checkAuth]);
     console.log({ authUser });
     if (!isActive) {
         return (
-            <div className="flex items-center justify-center h-screen text-xl">
-                <p>El chat está activo en otra pestaña.</p>
+            <div className="flex items-center justify-center h-screen text-xl text-center p-4">
+                {reason === "blocked" && (
+                    <p>
+                        Tu sesión ya está activa en otra pestaña. Ciérrala para
+                        continuar aquí.
+                    </p>
+                )}
+                {reason === "transferred" && (
+                    <p>Tu sesión fue trasladada a esta pestaña.</p>
+                )}
             </div>
         );
     }

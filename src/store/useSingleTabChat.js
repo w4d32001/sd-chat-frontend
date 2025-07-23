@@ -4,45 +4,43 @@ const SESSION_KEY = "active_chat_tab";
 
 export const useSingleTabChat = (transfer = true) => {
   const [isActive, setIsActive] = useState(false);
+  const [reason, setReason] = useState(""); // para mensajes más claros
   const tabId = window.crypto.randomUUID();
 
   useEffect(() => {
-    const checkSession = () => {
-      const activeTab = localStorage.getItem(SESSION_KEY);
+    const activeTab = localStorage.getItem(SESSION_KEY);
 
-      if (!activeTab) {
-        localStorage.setItem(SESSION_KEY, tabId);
-        setIsActive(true);
-      } else if (activeTab === tabId) {
-        setIsActive(true);
-      } else if (transfer) {
-        localStorage.setItem(SESSION_KEY, tabId);
-        setIsActive(true);
-        window.dispatchEvent(new Event("chat-tab-changed")); 
-      } else {
-        setIsActive(false);
-      }
-    };
+    if (!activeTab) {
+      // No hay pestaña activa, tomar el control inmediatamente
+      localStorage.setItem(SESSION_KEY, tabId);
+      setIsActive(true);
+      setReason("active");
+    } else if (activeTab === tabId) {
+      // Esta pestaña ya es la activa
+      setIsActive(true);
+      setReason("active");
+    } else if (transfer) {
+      // Tomar el control y avisar a la anterior
+      localStorage.setItem(SESSION_KEY, tabId);
+      setIsActive(true);
+      setReason("transferred");
+      window.dispatchEvent(new Event("chat-tab-changed"));
+    } else {
+      // No tomar control (otra pestaña sigue activa)
+      setIsActive(false);
+      setReason("blocked");
+    }
 
-    checkSession();
-
+    // Escuchar cambios (otra pestaña toma control)
     const handleStorage = (e) => {
-      if (e.key === SESSION_KEY) {
-        if (e.newValue !== tabId) {
-          setIsActive(false);
-        }
+      if (e.key === SESSION_KEY && e.newValue !== tabId) {
+        setIsActive(false);
+        setReason("blocked");
       }
     };
-
     window.addEventListener("storage", handleStorage);
 
-    const handleTabChanged = () => {
-      if (localStorage.getItem(SESSION_KEY) !== tabId) {
-        setIsActive(false);
-      }
-    };
-    window.addEventListener("chat-tab-changed", handleTabChanged);
-
+    // Al cerrar, liberar el control
     const handleUnload = () => {
       if (localStorage.getItem(SESSION_KEY) === tabId) {
         localStorage.removeItem(SESSION_KEY);
@@ -52,10 +50,9 @@ export const useSingleTabChat = (transfer = true) => {
 
     return () => {
       window.removeEventListener("storage", handleStorage);
-      window.removeEventListener("chat-tab-changed", handleTabChanged);
       window.removeEventListener("beforeunload", handleUnload);
     };
   }, [tabId, transfer]);
 
-  return isActive;
+  return { isActive, reason };
 };
