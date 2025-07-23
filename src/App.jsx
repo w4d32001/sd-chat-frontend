@@ -4,6 +4,7 @@ import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import SettingsPage from "./pages/SettingsPage";
 import ProfilePage from "./pages/ProfilePage";
+import ContactsPage from "./pages/ContactsPage";
 
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuthStore } from "./store/useAuthStore";
@@ -75,6 +76,10 @@ const App = () => {
                 <Route
                     path="/signup"
                     element={!authUser ? <SignUpPage /> : <Navigate to="/" />}
+                />
+                 <Route
+                  path="/contacts"
+                  element={authUser ? <ContactsPage /> : <Navigate to="/login" />}
                 />
                 <Route
                     path="/login"
