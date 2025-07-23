@@ -1,5 +1,4 @@
 import Navbar from "./components/Navbar";
-
 import HomePage from "./pages/HomePage";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
@@ -16,39 +15,53 @@ import { Toaster } from "react-hot-toast";
 import { useSingleTabChat } from "./store/useSingleTabChat";
 
 const App = () => {
-    const { isActive, reason } = useSingleTabChat(true);
-
+    const { isActive, reason, forceActivate } = useSingleTabChat(true);
     const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
     const { theme } = useThemeStore();
+
     console.log({ onlineUsers });
 
     useEffect(() => {
         if (isActive) {
-            checkAuth(); 
+            checkAuth();
         }
     }, [isActive, checkAuth]);
+
     console.log({ authUser });
+
     if (!isActive) {
         return (
-            <div className="flex items-center justify-center h-screen text-xl text-center p-4">
+            <div className="flex flex-col items-center justify-center h-screen text-xl text-center p-4 space-y-4">
                 {reason === "blocked" && (
-                    <p>
-                        Tu sesión ya está activa en otra pestaña. Ciérrala para
-                        continuar aquí.
-                    </p>
+                    <>
+                        <p className="text-gray-600">
+                            Tu sesión ya está activa en otra pestaña. Ciérrala para
+                            continuar aquí.
+                        </p>
+                        <button
+                            onClick={forceActivate}
+                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                        >
+                            Usar esta pestaña
+                        </button>
+                    </>
                 )}
                 {reason === "transferred" && (
-                    <p>Tu sesión fue trasladada a esta pestaña.</p>
+                    <p className="text-green-600">
+                        Tu sesión fue trasladada a esta pestaña.
+                    </p>
                 )}
             </div>
         );
     }
-    if (isCheckingAuth && !authUser)
+
+    if (isCheckingAuth && !authUser) {
         return (
             <div className="flex items-center justify-center h-screen">
                 <Loader className="size-10 animate-spin" />
             </div>
         );
+    }
 
     return (
         <div data-theme={theme}>
@@ -80,4 +93,5 @@ const App = () => {
         </div>
     );
 };
+
 export default App;
