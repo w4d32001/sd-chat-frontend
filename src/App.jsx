@@ -16,9 +16,10 @@ import { Toaster } from "react-hot-toast";
 import { useSingleTabChat } from "./store/useSingleTabChat";
 
 const App = () => {
+    const isActive = useSingleTabChat(true);
+
     const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
     const { theme } = useThemeStore();
-    const isActive = useSingleTabChat(true);
     console.log({ onlineUsers });
 
     useEffect(() => {
@@ -26,14 +27,6 @@ const App = () => {
     }, [checkAuth]);
 
     console.log({ authUser });
-
-    if (isCheckingAuth && !authUser)
-        return (
-            <div className="flex items-center justify-center h-screen">
-                <Loader className="size-10 animate-spin" />
-            </div>
-        );
-
     if (!isActive) {
         return (
             <div className="flex items-center justify-center h-screen text-xl">
@@ -41,6 +34,12 @@ const App = () => {
             </div>
         );
     }
+    if (isCheckingAuth && !authUser)
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <Loader className="size-10 animate-spin" />
+            </div>
+        );
 
     return (
         <div data-theme={theme}>
