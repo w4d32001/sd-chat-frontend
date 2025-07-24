@@ -86,14 +86,12 @@ const ContactsPage = () => {
   };
 
   return (
-    <div className="h-full flex flex-col">
-      {/* Header */}
+    <div className="h-full flex flex-col p-32">
       <div className="border-b border-gray-200 dark:border-gray-700 p-4">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
           Gestión de Contactos
         </h1>
         
-        {/* Tabs */}
         <div className="flex space-x-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
           <button
             onClick={() => handleTabChange("contacts")}
@@ -133,7 +131,6 @@ const ContactsPage = () => {
         </div>
       </div>
 
-      {/* Content */}
       <div className="flex-1 overflow-hidden">
         {/* Search Tab */}
         {activeTab === "search" && (
@@ -207,7 +204,6 @@ const ContactsPage = () => {
           </div>
         )}
 
-        {/* Contacts Tab */}
         {activeTab === "contacts" && (
           <div className="p-4 h-full overflow-y-auto">
             {isLoading ? (
