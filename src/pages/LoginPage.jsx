@@ -18,7 +18,7 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="h-screen p-8 md:p-32">
+        <div className="h-screen p-8 pt-32 md:pt-0 md:p-32">
             <div className="grid lg:grid-cols-2 border rounded-3xl shadow-2xl">
                 <div className="flex flex-col justify-center items-center p-6 sm:p-12">
                     <div className="w-full max-w-md space-y-8">
