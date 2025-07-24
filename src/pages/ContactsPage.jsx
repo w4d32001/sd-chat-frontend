@@ -86,7 +86,7 @@ const ContactsPage = () => {
   };
 
   return (
-    <div className="h-full flex flex-col p-32">
+    <div className="h-screen flex flex-col p-32">
       <div className="border-b border-gray-200 dark:border-gray-700 p-4">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
           Gestión de Contactos
